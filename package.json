@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/modulesio/hypersh/issues"
   },
-  "homepage": "https://github.com/modulesio/hypersh#readme"
+  "homepage": "https://github.com/modulesio/hypersh#readme",
+  "dependencies": {
+    "pty.js": "^0.3.1"
+  }
 }

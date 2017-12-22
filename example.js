@@ -8,7 +8,15 @@ h.run({
   .then(container => {
     return h.fipLs()
       .then(ips => {
-        return h.fipAttach(ips[0], container);
+        return h.fipAttach(ips[0], container)
+          .then(() => {
+            const cp = h.exec(container, ['bash']);
+            cp.stdin.write('exit\n');
+            cp.stdout.pipe(process.stdout);
+            cp.on('exit', code => {
+              console.log('exit code', code);
+            });
+          });
       });
   })
   .catch(err => {

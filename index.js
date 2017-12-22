@@ -1,5 +1,7 @@
 const childProcess = require('child_process');
 
+const pty = require('pty.js');
+
 class Hyper {
   constructor({bin}) {
     this.bin = bin;
@@ -79,6 +81,10 @@ class Hyper {
         }
       });
     });
+  }
+
+  exec(container, cmd) {
+    return pty.spawn(this.bin, ['exec', '-ti', container].concat(cmd));
   }
 }
 
