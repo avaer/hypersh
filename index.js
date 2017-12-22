@@ -83,6 +83,20 @@ class Hyper {
     });
   }
 
+  running(container) {
+    return new Promise((accept, reject) => {
+      childProcess.execFile(this.bin, ['inspect', '-f', '{{.State.Running}}', container], {
+        encoding: 'utf8',
+      }, (err, stdout, stderr) => {
+        if (!err) {
+          accept(/^true\s*$/.test(stdout));
+        } else {
+          accept(false);
+        }
+      });
+    });
+  }
+
   exec(container, cmd) {
     return pty.spawn(this.bin, ['exec', '-ti', container].concat(cmd));
   }
