@@ -83,6 +83,9 @@ class Hyper {
     const s = new stream.PassThrough();
     s.destroy = () => {
       cp.kill();
+
+      cp.stdout.unpipe(s);
+      cp.stderr.unpipe(s);
     };
 
     const cp = childProcess.spawn(this.bin, ['logs', '-f', container], {
