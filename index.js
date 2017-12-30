@@ -79,7 +79,7 @@ class Hyper {
     });
   }
 
-  createLogStream(container) {
+  createLogStream(container, {tail = 'all'} = {}) {
     const s = new stream.PassThrough();
     s.destroy = () => {
       cp.kill();
@@ -88,7 +88,7 @@ class Hyper {
       cp.stderr.unpipe(s);
     };
 
-    const cp = childProcess.spawn(this.bin, ['logs', '-f', container], {
+    const cp = childProcess.spawn(this.bin, ['logs', '-f', container, '--tail=' + tail], {
       encoding: 'utf8',
     }, (err, stdout, stderr) => {
       if (!err) {
