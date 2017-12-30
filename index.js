@@ -1,3 +1,4 @@
+const stream = require('stream');
 const childProcess = require('child_process');
 
 const pty = require('pty.js');
