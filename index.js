@@ -36,6 +36,34 @@ class Hyper {
     });
   }
 
+  start(container) {
+    return new Promise((accept, reject) => {
+      childProcess.execFile(this.bin, ['start', container], {
+        encoding: 'utf8',
+      }, (err, stdout, stderr) => {
+        if (!err) {
+          accept();
+        } else {
+          reject(err);
+        }
+      });
+    });
+  }
+
+  stop(container) {
+    return new Promise((accept, reject) => {
+      childProcess.execFile(this.bin, ['stop', container], {
+        encoding: 'utf8',
+      }, (err, stdout, stderr) => {
+        if (!err) {
+          accept();
+        } else {
+          reject(err);
+        }
+      });
+    });
+  }
+
   rm(container) {
     return new Promise((accept, reject) => {
       childProcess.execFile(this.bin, ['rm', '-f', container], {
@@ -48,6 +76,34 @@ class Hyper {
         }
       });
     });
+  }
+
+  createLogStream(container) {
+    const s = new stream.PassThrough();
+    s.destroy = () => {
+      cp.kill();
+    };
+
+    const cp = childProcess.spawn(this.bin, ['logs', '-f', container], {
+      encoding: 'utf8',
+    }, (err, stdout, stderr) => {
+      if (!err) {
+        accept();
+      } else {
+        reject(err);
+      }
+    });
+    cp.on('error', err => {
+      s.emit('error', err);
+    });
+    cp.stdout.pipe(s);
+    cp.stderr.pipe(s, {end: false});
+
+    return s;
+  }
+
+  exec(container, cmd) {
+    return pty.spawn(this.bin, ['exec', '-ti', container].concat(cmd));
   }
 
   fipLs() {
@@ -95,10 +151,6 @@ class Hyper {
         }
       });
     });
-  }
-
-  exec(container, cmd) {
-    return pty.spawn(this.bin, ['exec', '-ti', container].concat(cmd));
   }
 }
 
