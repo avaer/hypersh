@@ -110,6 +110,38 @@ class Hyper {
     return pty.spawn(this.bin, ['exec', '-ti', container].concat(cmd));
   }
 
+  ps({all = true} = {}) {
+    return new Promise((accept, reject) => {
+      childProcess.execFile(this.bin, ['ps', '-q'].concat(all ? ['-a'] : []), {
+        encoding: 'utf8',
+      }, (err, stdout, stderr) => {
+        if (!err) {
+          accept(stdout.split('\n').filter(container => container));
+        } else {
+          reject(err);
+        }
+      });
+    });
+  }
+
+  inspect(containers) {
+    if (!Array.isArray(containers)) {
+      containers = [containers];
+    }
+
+    return new Promise((accept, reject) => {
+      childProcess.execFile(this.bin, ['inspect'].concat(containers), {
+        encoding: 'utf8',
+      }, (err, stdout, stderr) => {
+        if (!err) {
+          accept(JSON.parse(stdout));
+        } else {
+          reject(err);
+        }
+      });
+    });
+  }
+
   fipLs() {
     return new Promise((accept, reject) => {
       childProcess.execFile(this.bin, ['fip', 'ls', '--filter', 'dangling=true'], {
