@@ -88,7 +88,7 @@ class Hyper {
       cp.stderr.unpipe(s);
     };
 
-    const cp = childProcess.spawn(this.bin, ['logs', '-f', container, '--tail=' + tail], {
+    const cp = childProcess.spawn(this.bin, ['logs', '-f', '--tail=' + tail, container], {
       encoding: 'utf8',
     }, (err, stdout, stderr) => {
       if (!err) {
