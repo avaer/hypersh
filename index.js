@@ -22,9 +22,9 @@ class Hyper {
     });
   }
 
-  run({image, port}) {
+  run({image, hostname, port}) {
     return new Promise((accept, reject) => {
-      childProcess.execFile(this.bin, ['run', '-d', '-p', `${port}:${port}`, image], {
+      childProcess.execFile(this.bin, ['run', '-d'].concat(hostname ? ['-h', hostname] : []).concat(['-p', `${port}:${port}`, image]), {
         encoding: 'utf8',
       }, (err, stdout, stderr) => {
         if (!err) {
